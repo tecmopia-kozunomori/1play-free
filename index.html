@@ -43,6 +43,9 @@
             color: white;
             border-radius: 0 0 40px 40px;
             box-shadow: 0 4px 15px rgba(255, 77, 125, 0.3);
+            /* 隠しボタン用にカーソルを変更（パソコンで見た時用） */
+            cursor: pointer;
+            user-select: none;
         }
         .header h1 {
             margin: 0;
@@ -165,7 +168,7 @@
 <body>
 
 <div class="container" id="main-ui">
-    <div class="header">
+    <div class="header" onclick="activateSecretTestMode()">
         <h1>休日限定</h1>
         <div class="title-main">クレーンゲーム<br>1回無料</div>
     </div>
@@ -230,14 +233,30 @@
     const dateStr = today.toLocaleDateString('ja-JP');
     const day = today.getDay();
 
+    // 🌟 隠しテストモード機能
+    let secretTapCount = 0;
+    function activateSecretTestMode() {
+        secretTapCount++;
+        if (secretTapCount >= 5) {
+            alert("🛠️ テストモードを有効にしました！\nすべての制限を解除します。");
+            sessionStorage.setItem('is_test_mode', 'true');
+            document.getElementById('screen-error').style.display = 'none';
+        }
+        // 1秒後にカウントをリセット（連続タップ判定用）
+        setTimeout(() => { secretTapCount = 0; }, 1000);
+    }
+
+    // 判定ロジック
     function checkCondition() {
-        const params = new URLSearchParams(window.location.search);
+        // URLパラメータまたはセッションストレージ（隠しコマンド実行後）にテストフラグがあるか確認
+        const isTestUrl = window.location.href.includes('test=true');
+        const isTestSession = sessionStorage.getItem('is_test_mode') === 'true';
         
-        // 🌟 テストモード：URLに ?test=true があればすべての制限を無視して通す
-        if (params.get('test') === 'true') {
-            return true;
+        if (isTestUrl || isTestSession) {
+            return true; // テストモードなら制限を全てスルー
         }
 
+        const params = new URLSearchParams(window.location.search);
         const errorScreen = document.getElementById('screen-error');
         const errorTitle = document.getElementById('error-title');
         const errorMsg = document.getElementById('error-msg');
@@ -256,7 +275,6 @@
             errorScreen.style.display = 'flex';
             errorIcon.innerText = "📅";
             errorTitle.innerText = "平日はお休みだよ";
-            // ★ innerHTML に変更（<br>が改行として効くようになります）
             errorMsg.innerHTML = "このクーポンは土・日・祝日限定です。<br>またお休みの日に遊びに来てね！";
             return false;
         }
@@ -266,7 +284,6 @@
             errorScreen.style.display = 'flex';
             errorIcon.innerText = "💖";
             errorTitle.innerText = "また遊びに来てね！";
-            // ★ innerHTML に変更
             errorMsg.innerHTML = "今日の分はもう使ったよ。<br>クーポンは1日1回までです。また明日ね！";
             return false;
         }
@@ -284,9 +301,8 @@
 
     // GASに利用状況を送信する関数
     function sendToGas() {
-        // テストモード時は送信しないようにする（本当のデータと混ざらないようにするため）
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('test') === 'true') {
+        // テストモード時は送信しない
+        if (window.location.href.includes('test=true') || sessionStorage.getItem('is_test_mode') === 'true') {
             console.log("テストモードのためGASへの送信をスキップしました");
             return;
         }
@@ -301,8 +317,7 @@
         sendToGas();
 
         // 使用済みとして保存（テストモードの時は記録しない）
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('test') !== 'true') {
+        if (!window.location.href.includes('test=true') && sessionStorage.getItem('is_test_mode') !== 'true') {
             localStorage.setItem('coupon_used_date', dateStr);
         }
         
