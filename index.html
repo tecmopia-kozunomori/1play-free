@@ -105,7 +105,6 @@
             transition: 0.3s;
             box-shadow: 0 4px 10px rgba(255, 133, 161, 0.2);
         }
-        .guide-btn:active { transform: scale(0.95); }
 
         .coupon-btn {
             background: linear-gradient(to bottom, #ff9eb5, #ff4d7d);
@@ -122,9 +121,9 @@
             animation: pulse-btn 2s infinite;
         }
         @keyframes pulse-btn {
-            0% { transform: scale(1); box-shadow: 0 8px 0 #d6335c, 0 15px 25px rgba(255, 77, 125, 0.4); }
-            50% { transform: scale(1.03); box-shadow: 0 8px 0 #d6335c, 0 20px 35px rgba(255, 77, 125, 0.6); }
-            100% { transform: scale(1); box-shadow: 0 8px 0 #d6335c, 0 15px 25px rgba(255, 77, 125, 0.4); }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
         }
         .coupon-btn:active {
             animation: none;
@@ -154,7 +153,6 @@
             background: white; width: 100%; max-width: 400px;
             border-radius: 30px; padding: 30px; position: relative;
             animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         }
         @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
@@ -165,47 +163,25 @@
             display: flex; justify-content: center; align-items: center;
             font-size: 26px; font-weight: bold; cursor: pointer;
             border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            transition: 0.2s;
         }
-        .close-btn:active { transform: scale(0.9); }
 
         .sample-img {
-            width: 120px;
-            height: auto;
-            display: block;
-            margin: 10px auto;
-            border: 3px solid var(--light-pink);
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 120px; height: auto; display: block; margin: 10px auto;
+            border: 3px solid var(--light-pink); border-radius: 10px;
         }
 
         #screen-result {
-            display: none; position: fixed; inset: 0;
-            background: var(--bg-white); z-index: 2000;
-            flex-direction: column; align-items: center; justify-content: center;
-            text-align: center;
+            display: none; position: fixed; inset: 0; background: var(--bg-white); z-index: 2000;
+            flex-direction: column; align-items: center; justify-content: center; text-align: center;
             background: repeating-linear-gradient(-45deg, var(--light-pink), var(--light-pink) 20px, var(--bg-white) 20px, var(--bg-white) 40px);
-            background-size: 200% 200%;
-            animation: stripeMove 20s linear infinite;
+            background-size: 200% 200%; animation: stripeMove 20s linear infinite;
         }
-        .result-title {
-            font-size: 3.5rem; color: var(--hot-pink);
-            animation: jump 0.6s infinite alternate;
-            text-shadow: 0 5px 15px rgba(255, 77, 125, 0.3);
-        }
+        .result-title { font-size: 3.5rem; color: var(--hot-pink); animation: jump 0.6s infinite alternate; }
         @keyframes jump { from { transform: translateY(0); } to { transform: translateY(-20px); } }
 
         .result-card {
-            border: 6px solid var(--main-pink);
-            padding: 40px 20px; border-radius: 30px; margin: 20px;
-            background: white;
-            box-shadow: 0 0 30px rgba(255, 77, 125, 0.5);
-            animation: shine 1.5s infinite;
-        }
-        @keyframes shine {
-            0% { box-shadow: 0 0 20px var(--main-pink); transform: scale(1); }
-            50% { box-shadow: 0 0 50px var(--hot-pink); transform: scale(1.02); }
-            100% { box-shadow: 0 0 20px var(--main-pink); transform: scale(1); }
+            border: 6px solid var(--main-pink); padding: 40px 20px; border-radius: 30px; margin: 20px;
+            background: white; box-shadow: 0 0 30px rgba(255, 77, 125, 0.5); animation: shine 1.5s infinite;
         }
 
         .full-screen-error {
@@ -213,27 +189,13 @@
             display: none; flex-direction: column; align-items: center; justify-content: center;
             text-align: center; padding: 20px; z-index: 3000;
         }
-        
-        .error-icon { 
-            font-size: 5rem; 
-            margin-bottom: 20px; 
-            cursor: pointer; 
-            user-select: none;
-        }
-        
+        .error-icon { font-size: 5rem; margin-bottom: 20px; cursor: pointer; }
         .error-msg-text { line-height: 1.6; font-weight: bold; background: var(--light-pink); padding: 20px; border-radius: 20px;}
-        
         .next-date-highlight {
-            display: inline-block;
-            background: white;
-            color: var(--hot-pink);
-            padding: 5px 15px;
-            border-radius: 10px;
-            margin: 10px 0;
-            font-size: 1.2rem;
-            border: 2px dashed var(--hot-pink);
+            display: inline-block; background: white; color: var(--hot-pink);
+            padding: 5px 15px; border-radius: 10px; margin: 10px 0;
+            font-size: 1.2rem; border: 2px dashed var(--hot-pink);
         }
-
     </style>
 </head>
 <body>
@@ -246,16 +208,10 @@
 
     <div class="content">
         <div class="guide-btn" onclick="toggleModal('modal-guide', true)">📖 クーポンの使い方はこちら</div>
-        
         <div style="margin: 30px 0;">
-            <p style="font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; color: var(--hot-pink);">
-                ↓ スタッフを呼んでから押してね ↓
-            </p>
+            <p style="font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; color: var(--hot-pink);">↓ スタッフを呼んでから押してね ↓</p>
             <button class="coupon-btn" onclick="confirmStaff()">クーポンを使う</button>
-            <div class="warning-text">
-                ⚠️ 注意 ⚠️<br>
-                スタッフと一緒にボタンを押してください。<br>先にボタンを押すと特典が無効となります。
-            </div>
+            <div class="warning-text">⚠️ 注意 ⚠️<br>スタッフと一緒にボタンを押してください。<br>先にボタンを押すと特典が無効となります。</div>
         </div>
     </div>
 </div>
@@ -264,7 +220,7 @@
     <div class="modal">
         <div class="close-btn" onclick="toggleModal('modal-guide', false)">×</div>
         <h2 style="color: var(--hot-pink); text-align: center; margin-top: 0;">使いかた</h2>
-        <ol style="line-height: 1.8; font-weight: bold; padding-left: 20px; text-align: left; color: #5d4037;">
+        <ol style="line-height: 1.8; font-weight: bold; padding-left: 20px; text-align: left;">
             <li>遊びたいクレーンゲーム機を選びます。</li>
             <li>下のマークがある台が対象です。
                 <img src="https://github.com/tecmopia-kozunomori/1play-free/blob/main/1play.png?raw=true" alt="1playマーク" class="sample-img">
@@ -272,7 +228,6 @@
             <li>場所が決まったらスタッフをお呼びください。</li>
             <li>スタッフの前で「クーポンを使う」を押します。</li>
         </ol>
-        <p style="font-size: 0.8rem; text-align: center; color: #888; margin-bottom: 0;">※スタッフが確認ボタンを操作します。</p>
     </div>
 </div>
 
@@ -289,148 +244,96 @@
     <div class="result-title">🎉💖✨</div>
     <div class="result-card">
         <h2 style="font-size: 2.2rem; color: var(--hot-pink); margin: 0;">おめでとう！</h2>
-        <p style="font-size: 1.6rem; font-weight: 800; margin: 20px 0; color: #5d4037;">クレーンゲーム<br>１回無料</p>
+        <p style="font-size: 1.6rem; font-weight: 800; margin: 20px 0;">クレーンゲーム<br>１回無料</p>
     </div>
-    <p style="font-weight: bold; color: var(--hot-pink); background: white; padding: 10px 20px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-        この画面をスタッフに見せてね！
-    </p>
+    <p style="font-weight: bold; color: var(--hot-pink); background: white; padding: 10px 20px; border-radius: 20px;">スタッフに見せてね！</p>
     <button class="guide-btn" style="margin-top: 30px; border: none; background: white;" onclick="location.reload()">閉じる</button>
 </div>
 
 <div id="screen-error" class="full-screen-error">
     <div class="error-icon" id="error-icon" onclick="activateSecretTestMode()">⚠️</div>
     <h2 id="error-title">二次元コードから遊んでね</h2>
-    <p id="error-msg" class="error-msg-text">このページは直接開くことはできません。<br>お店にある二次元コードを読み取ってね！</p>
+    <p id="error-msg" class="error-msg-text">お店の二次元コードを読み取ってね！</p>
 </div>
 
 <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbzdl008xh47dhQjdMgKmNJ6qFeuiEVVh8UbCthxHiNWlqYcj82_xmCs4_exI1oJ2s0i/exec";
+    // 🌟 1. 最新のGAS URLに更新
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyFnNG0PXDJChThPjmWJCbD4-HYqY0STk-qib3yDrZkaSNe4I03mOhhtHIVwSYTRQ3R5g/exec";
 
-    // 祝日設定
-    const holidays = [
-        "2024/1/1", "2024/1/8", "2024/2/11", "2024/2/12", "2024/2/23", "2024/3/20", "2024/4/29", "2024/5/3", "2024/5/4", "2024/5/5", "2024/5/6", "2024/7/15", "2024/8/11", "2024/8/12", "2024/9/16", "2024/9/22", "2024/9/23", "2024/10/14", "2024/11/3", "2024/11/4", "2024/11/23",
-        "2026/1/1", "2026/1/12", "2026/2/11", "2026/2/23", "2026/3/20", "2026/4/29", "2026/5/3", "2026/5/4", "2026/5/5", "2026/5/6", "2026/7/20", "2026/8/11", "2026/9/21", "2026/9/22", "2026/9/23", "2026/10/12", "2026/11/3", "2026/11/23"
-    ];
-
+    const holidays = ["2026/1/1", "2026/1/12", "2026/2/11", "2026/2/23", "2026/3/20", "2026/4/29", "2026/5/3", "2026/5/4", "2026/5/5", "2026/5/6", "2026/7/20", "2026/8/11", "2026/9/21", "2026/9/22", "2026/9/23", "2026/10/12", "2026/11/3", "2026/11/23"];
     const today = new Date();
-    const y = today.getFullYear();
-    const m = today.getMonth() + 1;
-    const d = today.getDate();
-    const dateStr = `${y}/${m}/${d}`; 
-    const day = today.getDay();
+    const y = today.getFullYear(), m = today.getMonth() + 1, d = today.getDate();
+    const dateStr = `${y}/${m}/${d}`, day = today.getDay();
     const dayNames = ["日", "月", "火", "水", "木", "金", "土"];
 
     function getNextAvailableDate() {
         let checkDate = new Date(today);
         for (let i = 1; i <= 30; i++) {
             checkDate.setDate(checkDate.getDate() + 1);
-            
             const checkDay = checkDate.getDay();
-            const cy = checkDate.getFullYear();
-            const cm = checkDate.getMonth() + 1;
-            const cd = checkDate.getDate();
-            const checkDateStr = `${cy}/${cm}/${cd}`; 
-            
-            if (checkDay === 0 || checkDay === 6 || holidays.includes(checkDateStr)) {
-                return `${cm}月${cd}日（${dayNames[checkDay]}）`;
-            }
+            const cy = checkDate.getFullYear(), cm = checkDate.getMonth() + 1, cd = checkDate.getDate();
+            const checkDateStr = `${cy}/${cm}/${cd}`;
+            if (checkDay === 0 || checkDay === 6 || holidays.includes(checkDateStr)) return `${cm}月${cd}日（${dayNames[checkDay]}）`;
         }
         return "次の土・日・祝日";
     }
 
-    let secretTapCount = 0;
-    let tapTimer;
-    
+    let secretTapCount = 0, tapTimer;
     function activateSecretTestMode() {
         secretTapCount++;
         clearTimeout(tapTimer);
-        
         if (secretTapCount >= 5) {
-            alert("🛠️ テストモードを有効にしました！\nすべての制限を解除します。");
+            alert("🛠️ テストモード有効！");
             sessionStorage.setItem('is_test_mode', 'true');
             document.getElementById('screen-error').style.display = 'none';
-            secretTapCount = 0;
         }
-        
         tapTimer = setTimeout(() => { secretTapCount = 0; }, 1000);
     }
 
     function checkCondition() {
-        const isTestUrl = window.location.href.includes('test=true');
-        const isTestSession = sessionStorage.getItem('is_test_mode') === 'true';
-        
-        if (isTestUrl || isTestSession) {
-            return true;
-        }
-
+        if (window.location.href.includes('test=true') || sessionStorage.getItem('is_test_mode') === 'true') return true;
         const params = new URLSearchParams(window.location.search);
         const errorScreen = document.getElementById('screen-error');
-        const errorTitle = document.getElementById('error-title');
-        const errorMsg = document.getElementById('error-msg');
-        const errorIcon = document.getElementById('error-icon');
-
-        if (params.get('source') !== 'qr') {
+        if (params.get('source') !== 'qr') { errorScreen.style.display = 'flex'; return false; }
+        if (day !== 0 && day !== 6 && !holidays.includes(dateStr)) {
             errorScreen.style.display = 'flex';
+            document.getElementById('error-icon').innerText = "🎡";
+            document.getElementById('error-title').innerText = "平日はお休みだよ";
+            document.getElementById('error-msg').innerHTML = `次回可能日：<br><span class="next-date-highlight">${getNextAvailableDate()}</span>`;
             return false;
         }
-
-        const isWeekend = (day === 0 || day === 6);
-        const isHoliday = holidays.includes(dateStr);
-        if (!isWeekend && !isHoliday) {
-            const nextDate = getNextAvailableDate(); 
-            errorScreen.style.display = 'flex';
-            errorIcon.innerText = "🎡"; 
-            errorTitle.innerText = "平日はお休みだよ";
-            errorMsg.innerHTML = `このクーポンは土・日・祝日限定です。<br>次回のご利用可能日は<br><span class="next-date-highlight">${nextDate}</span><br>となります！また遊びに来てね！`;
-            return false;
-        }
-
         if (localStorage.getItem('coupon_used_date') === dateStr) {
             errorScreen.style.display = 'flex';
-            errorIcon.innerText = "💖";
-            errorTitle.innerText = "また遊びに来てね！";
-            errorMsg.innerHTML = "今日の分はもう使ったよ。<br>クーポンは1日1回までです。また明日ね！";
+            document.getElementById('error-icon').innerText = "💖";
+            document.getElementById('error-title').innerText = "また明日ね！";
+            document.getElementById('error-msg').innerHTML = "今日の分はもう使ったよ。";
             return false;
         }
-
         return true;
     }
 
-    function toggleModal(id, show) {
-        document.getElementById(id).style.display = show ? 'flex' : 'none';
-    }
+    function toggleModal(id, show) { document.getElementById(id).style.display = show ? 'flex' : 'none'; }
+    function confirmStaff() { toggleModal('modal-staff', true); }
 
-    function confirmStaff() {
-        toggleModal('modal-staff', true);
-    }
-
-    // 🌟 GASへ送信する処理（テストモードのときも送信するように変更しました）
+    // 🌟 2. 種別を正しく送るように更新した送信関数
     function sendToGas() {
-        // もしGAS側で「これはテストデータだ」と明確に分けたい場合は、パラメータを変更できます。
-        // 現在は本番と同じ `type=holiday_crane_free` として送信します。
-        fetch(`${GAS_URL}?type=holiday_crane_free`, { mode: 'no-cors' })
-        .then(() => console.log("利用状況を送信しました"))
-        .catch(err => console.error("送信エラー:", err));
+        // テストモードでも送信するようにしています
+        const requestUrl = `${GAS_URL}?type=${encodeURIComponent("クレーンゲーム1回無料")}`;
+        fetch(requestUrl, { mode: 'no-cors' });
     }
 
     function activateCoupon() {
         sendToGas();
-
-        // 🌟 スマホ側の使用済み記録は、テストモードではない時のみ保存（何度もテストできるようにするため）
         if (!window.location.href.includes('test=true') && sessionStorage.getItem('is_test_mode') !== 'true') {
-            localStorage.setItem('coupon_used_date', dateStr); 
+            localStorage.setItem('coupon_used_date', dateStr);
         }
-        
         toggleModal('modal-staff', false);
         document.getElementById('main-ui').style.display = 'none';
         document.getElementById('screen-result').style.display = 'flex';
-        
         if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
     }
 
-    window.onload = () => {
-        checkCondition();
-    };
+    window.onload = checkCondition;
 </script>
 </body>
 </html>
