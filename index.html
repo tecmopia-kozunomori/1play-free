@@ -14,25 +14,38 @@
             --font-main: 'M PLUS Rounded 1c', sans-serif;
         }
 
+        /* 🌟 休日のワクワク感を出す動くストライプ背景 */
         body {
             font-family: var(--font-main);
-            background-color: var(--light-pink);
             margin: 0;
             color: #5d4037;
             display: flex;
             justify-content: center;
             min-height: 100vh;
             overflow-x: hidden;
+            background: repeating-linear-gradient(
+                -45deg,
+                var(--light-pink),
+                var(--light-pink) 20px,
+                var(--bg-white) 20px,
+                var(--bg-white) 40px
+            );
+            background-size: 200% 200%;
+            animation: stripeMove 20s linear infinite;
+        }
+        @keyframes stripeMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
         }
 
         .container {
             width: 100%;
             max-width: 480px;
-            background: var(--bg-white);
+            background: rgba(255, 255, 255, 0.95); /* 背景が少し透けるように */
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 0 20px rgba(255, 133, 161, 0.2);
+            box-shadow: 0 0 30px rgba(255, 133, 161, 0.3);
         }
 
         /* --- ヘッダー領域 --- */
@@ -42,20 +55,38 @@
             background: linear-gradient(135deg, var(--main-pink), var(--hot-pink));
             color: white;
             border-radius: 0 0 40px 40px;
-            box-shadow: 0 4px 15px rgba(255, 77, 125, 0.3);
-            /* 隠しボタン用にカーソルを変更（パソコンで見た時用） */
+            box-shadow: 0 8px 20px rgba(255, 77, 125, 0.3);
             cursor: pointer;
             user-select: none;
+            position: relative;
+            overflow: hidden;
         }
+        /* ヘッダーの中のキラキラ装飾 */
+        .header::before, .header::after {
+            content: '✨';
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.8;
+            animation: floatSparkle 3s ease-in-out infinite;
+        }
+        .header::before { top: 20px; left: 20px; animation-delay: 0s; }
+        .header::after { bottom: 20px; right: 20px; animation-delay: 1.5s; }
+        @keyframes floatSparkle {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.2); }
+        }
+
         .header h1 {
             margin: 0;
-            font-size: 1.2rem;
-            letter-spacing: 1px;
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
         }
         .header .title-main {
-            font-size: 2.2rem;
+            font-size: 2.4rem;
             margin-top: 10px;
-            text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+            line-height: 1.2;
+            text-shadow: 2px 3px 0 rgba(0,0,0,0.15);
         }
 
         /* --- メインコンテンツ --- */
@@ -66,43 +97,55 @@
         }
 
         .guide-btn {
-            background: var(--light-pink);
+            background: var(--bg-white);
             color: var(--hot-pink);
-            border: 2px dashed var(--hot-pink);
-            padding: 12px 20px;
+            border: 3px dashed var(--hot-pink);
+            padding: 12px 25px;
             border-radius: 30px;
             font-weight: bold;
             cursor: pointer;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             display: inline-block;
             transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(255, 133, 161, 0.2);
         }
+        .guide-btn:active { transform: scale(0.95); }
 
+        /* 🌟 アーケードゲーム風の脈打つボタン */
         .coupon-btn {
             background: linear-gradient(to bottom, #ff9eb5, #ff4d7d);
             color: white;
             border: none;
             width: 90%;
             padding: 25px;
-            font-size: 1.5rem;
-            font-weight: 800;
-            border-radius: 20px;
-            box-shadow: 0 8px 0 #d6335c, 0 15px 25px rgba(255, 77, 125, 0.4);
+            font-size: 1.6rem;
+            font-weight: 900;
+            border-radius: 25px;
             cursor: pointer;
-            transition: 0.1s;
             margin-top: 20px;
+            box-shadow: 0 8px 0 #d6335c, 0 15px 25px rgba(255, 77, 125, 0.4);
+            animation: pulse-btn 2s infinite;
+        }
+        @keyframes pulse-btn {
+            0% { transform: scale(1); box-shadow: 0 8px 0 #d6335c, 0 15px 25px rgba(255, 77, 125, 0.4); }
+            50% { transform: scale(1.03); box-shadow: 0 8px 0 #d6335c, 0 20px 35px rgba(255, 77, 125, 0.6); }
+            100% { transform: scale(1); box-shadow: 0 8px 0 #d6335c, 0 15px 25px rgba(255, 77, 125, 0.4); }
         }
         .coupon-btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 4px 0 #d6335c, 0 10px 15px rgba(255, 77, 125, 0.4);
+            animation: none;
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 #d6335c, 0 5px 10px rgba(255, 77, 125, 0.4);
         }
 
         .warning-text {
             color: var(--hot-pink);
-            font-size: 0.85rem;
-            margin-top: 15px;
+            font-size: 0.9rem;
+            margin-top: 20px;
             font-weight: bold;
-            line-height: 1.5;
+            line-height: 1.6;
+            background: var(--light-pink);
+            padding: 15px;
+            border-radius: 15px;
         }
 
         /* --- ポップアップ --- */
@@ -111,57 +154,76 @@
             background: rgba(0,0,0,0.6);
             display: none; justify-content: center; align-items: center;
             z-index: 1000; padding: 20px; box-sizing: border-box;
+            backdrop-filter: blur(5px); /* 背景を少しぼかす */
         }
         .modal {
             background: white; width: 100%; max-width: 400px;
             border-radius: 30px; padding: 30px; position: relative;
             animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         }
         @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         .close-btn {
             position: absolute; top: -15px; right: -15px;
             background: var(--hot-pink); color: white;
-            width: 40px; height: 40px; border-radius: 50%;
+            width: 45px; height: 45px; border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
-            font-size: 24px; font-weight: bold; cursor: pointer;
+            font-size: 26px; font-weight: bold; cursor: pointer;
             border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: 0.2s;
+        }
+        .close-btn:active { transform: scale(0.9); }
+
+        .sample-img {
+            width: 120px;
+            height: auto;
+            display: block;
+            margin: 10px auto;
+            border: 3px solid var(--light-pink);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         /* --- 特典獲得画面 --- */
         #screen-result {
             display: none; position: fixed; inset: 0;
-            background: white; z-index: 2000;
+            background: var(--bg-white); z-index: 2000;
             flex-direction: column; align-items: center; justify-content: center;
             text-align: center;
+            /* 🌟 結果画面もストライプで華やかに */
+            background: repeating-linear-gradient(-45deg, var(--light-pink), var(--light-pink) 20px, var(--bg-white) 20px, var(--bg-white) 40px);
+            background-size: 200% 200%;
+            animation: stripeMove 20s linear infinite;
         }
         .result-title {
-            font-size: 3rem; color: var(--hot-pink);
+            font-size: 3.5rem; color: var(--hot-pink);
             animation: jump 0.6s infinite alternate;
+            text-shadow: 0 5px 15px rgba(255, 77, 125, 0.3);
         }
         @keyframes jump { from { transform: translateY(0); } to { transform: translateY(-20px); } }
 
         .result-card {
             border: 6px solid var(--main-pink);
             padding: 40px 20px; border-radius: 30px; margin: 20px;
-            background: var(--light-pink);
+            background: white;
             box-shadow: 0 0 30px rgba(255, 77, 125, 0.5);
             animation: shine 1.5s infinite;
         }
         @keyframes shine {
-            0% { box-shadow: 0 0 20px var(--main-pink); }
-            50% { box-shadow: 0 0 50px var(--hot-pink); }
-            100% { box-shadow: 0 0 20px var(--main-pink); }
+            0% { box-shadow: 0 0 20px var(--main-pink); transform: scale(1); }
+            50% { box-shadow: 0 0 50px var(--hot-pink); transform: scale(1.02); }
+            100% { box-shadow: 0 0 20px var(--main-pink); transform: scale(1); }
         }
 
         /* --- 制限・エラー画面 --- */
         .full-screen-error {
-            position: fixed; inset: 0; background: var(--light-pink);
+            position: fixed; inset: 0; background: var(--bg-white);
             display: none; flex-direction: column; align-items: center; justify-content: center;
             text-align: center; padding: 20px; z-index: 3000;
         }
         .error-icon { font-size: 5rem; margin-bottom: 20px; }
-        .error-msg-text { line-height: 1.6; font-weight: bold; }
+        .error-msg-text { line-height: 1.6; font-weight: bold; background: var(--light-pink); padding: 20px; border-radius: 20px;}
 
     </style>
 </head>
@@ -174,12 +236,17 @@
     </div>
 
     <div class="content">
-        <div class="guide-btn" onclick="toggleModal('modal-guide', true)">🌸 クーポンの使い方はこちら</div>
+        <div class="guide-btn" onclick="toggleModal('modal-guide', true)">📖 クーポンの使い方はこちら</div>
         
-        <div style="margin: 20px 0;">
-            <p style="font-weight: bold; margin-bottom: 10px;">スタッフを呼んでから<br>ボタンを押してね！</p>
+        <div style="margin: 30px 0;">
+            <p style="font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; color: var(--hot-pink);">
+                ↓ スタッフを呼んでから押してね ↓
+            </p>
             <button class="coupon-btn" onclick="confirmStaff()">クーポンを使う</button>
-            <p class="warning-text">注意：スタッフが操作します。<br>先にボタンを押すと特典が無効となります。</p>
+            <div class="warning-text">
+                ⚠️ 注意 ⚠️<br>
+                スタッフと一緒にボタンを押してください。<br>先にボタンを押すと特典が無効となります。
+            </div>
         </div>
     </div>
 </div>
@@ -187,34 +254,38 @@
 <div id="modal-guide" class="overlay">
     <div class="modal">
         <div class="close-btn" onclick="toggleModal('modal-guide', false)">×</div>
-        <h2 style="color: var(--hot-pink); text-align: center;">使いかた</h2>
-        <ol style="line-height: 1.8; font-weight: bold; padding-left: 20px;">
+        <h2 style="color: var(--hot-pink); text-align: center; margin-top: 0;">使いかた</h2>
+        <ol style="line-height: 1.8; font-weight: bold; padding-left: 20px; text-align: left; color: #5d4037;">
             <li>遊びたいクレーンゲーム機を選びます。</li>
-            <li>「1play.png」の表示がある台が対象です。</li>
+            <li>下のマークがある台が対象です。
+                <img src="https://github.com/tecmopia-kozunomori/1play-free/blob/main/1play.png?raw=true" alt="1playマーク" class="sample-img">
+            </li>
             <li>場所が決まったらスタッフをお呼びください。</li>
             <li>スタッフの前で「クーポンを使う」を押します。</li>
         </ol>
-        <p style="font-size: 0.8rem; text-align: center; color: #888;">※スタッフが確認ボタンを操作します。</p>
+        <p style="font-size: 0.8rem; text-align: center; color: #888; margin-bottom: 0;">※スタッフが確認ボタンを操作します。</p>
     </div>
 </div>
 
 <div id="modal-staff" class="overlay">
     <div class="modal" style="text-align: center;">
-        <h2 style="color: var(--hot-pink);">スタッフ確認</h2>
+        <h2 style="color: var(--hot-pink); margin-top: 0;">スタッフ確認</h2>
         <p style="font-weight: bold; margin-bottom: 30px;">スタッフ専用画面です。<br>実行してよろしいですか？</p>
-        <button class="coupon-btn" style="padding: 15px; font-size: 1.2rem;" onclick="activateCoupon()">スタッフが確認しました</button>
-        <p style="margin-top: 20px; color: #888; cursor: pointer;" onclick="toggleModal('modal-staff', false)">キャンセル</p>
+        <button class="coupon-btn" style="padding: 15px; font-size: 1.2rem; margin-top: 0; animation: none;" onclick="activateCoupon()">スタッフが確認しました</button>
+        <p style="margin-top: 25px; color: #888; font-weight: bold; cursor: pointer;" onclick="toggleModal('modal-staff', false)">キャンセル</p>
     </div>
 </div>
 
 <div id="screen-result">
     <div class="result-title">🎉💖✨</div>
     <div class="result-card">
-        <h2 style="font-size: 2rem; color: var(--hot-pink); margin: 0;">おめでとう！</h2>
-        <p style="font-size: 1.5rem; font-weight: 800; margin: 15px 0;">クレーンゲーム<br>１回無料</p>
+        <h2 style="font-size: 2.2rem; color: var(--hot-pink); margin: 0;">おめでとう！</h2>
+        <p style="font-size: 1.6rem; font-weight: 800; margin: 20px 0; color: #5d4037;">クレーンゲーム<br>１回無料</p>
     </div>
-    <p style="font-weight: bold; color: #888;">この画面をスタッフに見せてね！</p>
-    <button class="guide-btn" style="margin-top: 30px;" onclick="location.reload()">閉じる</button>
+    <p style="font-weight: bold; color: var(--hot-pink); background: white; padding: 10px 20px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+        この画面をスタッフに見せてね！
+    </p>
+    <button class="guide-btn" style="margin-top: 30px; border: none; background: white;" onclick="location.reload()">閉じる</button>
 </div>
 
 <div id="screen-error" class="full-screen-error">
@@ -224,7 +295,6 @@
 </div>
 
 <script>
-    // GASのURL
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzdl008xh47dhQjdMgKmNJ6qFeuiEVVh8UbCthxHiNWlqYcj82_xmCs4_exI1oJ2s0i/exec";
 
     const holidays = ["2024/01/01", "2024/01/08", "2024/02/11", "2024/02/12", "2024/02/23", "2024/03/20", "2024/04/29", "2024/05/03", "2024/05/04", "2024/05/05", "2024/05/06", "2024/07/15", "2024/08/11", "2024/08/12", "2024/09/16", "2024/09/22", "2024/09/23", "2024/10/14", "2024/11/03", "2024/11/04", "2024/11/23"];
@@ -233,7 +303,6 @@
     const dateStr = today.toLocaleDateString('ja-JP');
     const day = today.getDay();
 
-    // 🌟 隠しテストモード機能
     let secretTapCount = 0;
     function activateSecretTestMode() {
         secretTapCount++;
@@ -242,18 +311,15 @@
             sessionStorage.setItem('is_test_mode', 'true');
             document.getElementById('screen-error').style.display = 'none';
         }
-        // 1秒後にカウントをリセット（連続タップ判定用）
         setTimeout(() => { secretTapCount = 0; }, 1000);
     }
 
-    // 判定ロジック
     function checkCondition() {
-        // URLパラメータまたはセッションストレージ（隠しコマンド実行後）にテストフラグがあるか確認
         const isTestUrl = window.location.href.includes('test=true');
         const isTestSession = sessionStorage.getItem('is_test_mode') === 'true';
         
         if (isTestUrl || isTestSession) {
-            return true; // テストモードなら制限を全てスルー
+            return true;
         }
 
         const params = new URLSearchParams(window.location.search);
@@ -262,13 +328,11 @@
         const errorMsg = document.getElementById('error-msg');
         const errorIcon = document.getElementById('error-icon');
 
-        // QR経由かのチェック
         if (params.get('source') !== 'qr') {
             errorScreen.style.display = 'flex';
             return false;
         }
 
-        // 土日祝日チェック
         const isWeekend = (day === 0 || day === 6);
         const isHoliday = holidays.includes(dateStr);
         if (!isWeekend && !isHoliday) {
@@ -279,7 +343,6 @@
             return false;
         }
 
-        // 1日1回チェック
         if (localStorage.getItem('coupon_used_date') === dateStr) {
             errorScreen.style.display = 'flex';
             errorIcon.innerText = "💖";
@@ -299,24 +362,16 @@
         toggleModal('modal-staff', true);
     }
 
-    // GASに利用状況を送信する関数
     function sendToGas() {
-        // テストモード時は送信しない
         if (window.location.href.includes('test=true') || sessionStorage.getItem('is_test_mode') === 'true') {
-            console.log("テストモードのためGASへの送信をスキップしました");
             return;
         }
-
-        fetch(`${GAS_URL}?type=holiday_crane_free`, { mode: 'no-cors' })
-        .then(() => console.log("利用状況を送信しました"))
-        .catch(err => console.error("送信エラー:", err));
+        fetch(`${GAS_URL}?type=holiday_crane_free`, { mode: 'no-cors' });
     }
 
     function activateCoupon() {
-        // GASへデータ送信
         sendToGas();
 
-        // 使用済みとして保存（テストモードの時は記録しない）
         if (!window.location.href.includes('test=true') && sessionStorage.getItem('is_test_mode') !== 'true') {
             localStorage.setItem('coupon_used_date', dateStr);
         }
