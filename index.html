@@ -214,7 +214,6 @@
             text-align: center; padding: 20px; z-index: 3000;
         }
         
-        /* 🌟 エラーアイコンもタップ可能に（指マークが出るように設定） */
         .error-icon { 
             font-size: 5rem; 
             margin-bottom: 20px; 
@@ -307,13 +306,21 @@
 <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzdl008xh47dhQjdMgKmNJ6qFeuiEVVh8UbCthxHiNWlqYcj82_xmCs4_exI1oJ2s0i/exec";
 
+    // 🌟 祝日設定（※ゼロ埋めなしの「yyyy/m/d」形式で統一してください）
     const holidays = [
-        "2024/01/01", "2024/01/08", "2024/02/11", "2024/02/12", "2024/02/23", "2024/03/20", "2024/04/29", "2024/05/03", "2024/05/04", "2024/05/05", "2024/05/06", "2024/07/15", "2024/08/11", "2024/08/12", "2024/09/16", "2024/09/22", "2024/09/23", "2024/10/14", "2024/11/03", "2024/11/04", "2024/11/23",
-        "2026/1/1", "2026/1/12", "2026/2/11", "2026/2/23", "2026/3/20", "2026/4/29", "2026/5/3", "2026/5/4", "2026/5/5", "2026/5/6" 
+        "2024/1/1", "2024/1/8", "2024/2/11", "2024/2/12", "2024/2/23", "2024/3/20", "2024/4/29", "2024/5/3", "2024/5/4", "2024/5/5", "2024/5/6", "2024/7/15", "2024/8/11", "2024/8/12", "2024/9/16", "2024/9/22", "2024/9/23", "2024/10/14", "2024/11/3", "2024/11/4", "2024/11/23",
+        // 2026年の一部の例
+        "2026/1/1", "2026/1/12", "2026/2/11", "2026/2/23", "2026/3/20", "2026/4/29", "2026/5/3", "2026/5/4", "2026/5/5", "2026/5/6", "2026/7/20", "2026/8/11", "2026/9/21", "2026/9/22", "2026/9/23", "2026/10/12", "2026/11/3", "2026/11/23"
     ];
 
     const today = new Date();
-    const dateStr = today.toLocaleDateString('ja-JP');
+    
+    // 🌟 スマホ環境に依存しないように「yyyy/m/d」の形を自作して統一
+    const y = today.getFullYear();
+    const m = today.getMonth() + 1;
+    const d = today.getDate();
+    const dateStr = `${y}/${m}/${d}`; // 例: "2026/5/11"
+
     const day = today.getDay();
     const dayNames = ["日", "月", "火", "水", "木", "金", "土"];
 
@@ -321,32 +328,35 @@
         let checkDate = new Date(today);
         for (let i = 1; i <= 30; i++) {
             checkDate.setDate(checkDate.getDate() + 1);
-            const checkDay = checkDate.getDay();
-            const checkDateStr = checkDate.toLocaleDateString('ja-JP');
             
+            const checkDay = checkDate.getDay();
+            const cy = checkDate.getFullYear();
+            const cm = checkDate.getMonth() + 1;
+            const cd = checkDate.getDate();
+            const checkDateStr = `${cy}/${cm}/${cd}`; // 比較用の日付を作成
+            
+            // 土(6)、日(0)、または祝日リストに含まれているか
             if (checkDay === 0 || checkDay === 6 || holidays.includes(checkDateStr)) {
-                return `${checkDate.getMonth() + 1}月${checkDate.getDate()}日（${dayNames[checkDay]}）`;
+                return `${cm}月${cd}日（${dayNames[checkDay]}）`;
             }
         }
         return "次の土・日・祝日";
     }
 
-    // 🌟 テストモード判定の改良
     let secretTapCount = 0;
     let tapTimer;
     
     function activateSecretTestMode() {
         secretTapCount++;
-        clearTimeout(tapTimer); // 連続タップ中はリセットタイマーをキャンセル
+        clearTimeout(tapTimer);
         
         if (secretTapCount >= 5) {
             alert("🛠️ テストモードを有効にしました！\nすべての制限を解除します。");
             sessionStorage.setItem('is_test_mode', 'true');
-            document.getElementById('screen-error').style.display = 'none'; // エラー画面を強制的に非表示
+            document.getElementById('screen-error').style.display = 'none';
             secretTapCount = 0;
         }
         
-        // 最後のタップから1秒間何も操作がなかったらカウントをゼロに戻す
         tapTimer = setTimeout(() => { secretTapCount = 0; }, 1000);
     }
 
@@ -410,7 +420,7 @@
         sendToGas();
 
         if (!window.location.href.includes('test=true') && sessionStorage.getItem('is_test_mode') !== 'true') {
-            localStorage.setItem('coupon_used_date', dateStr);
+            localStorage.setItem('coupon_used_date', dateStr); // 使用済み履歴もゼロなし統一フォーマットで保存
         }
         
         toggleModal('modal-staff', false);
