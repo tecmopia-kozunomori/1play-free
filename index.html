@@ -158,6 +158,7 @@
             text-align: center; padding: 20px; z-index: 3000;
         }
         .error-icon { font-size: 5rem; margin-bottom: 20px; }
+        .error-msg-text { line-height: 1.6; font-weight: bold; }
 
     </style>
 </head>
@@ -216,11 +217,11 @@
 <div id="screen-error" class="full-screen-error">
     <div class="error-icon" id="error-icon">⚠️</div>
     <h2 id="error-title">二次元コードから遊んでね</h2>
-    <p id="error-msg">このページは直接開くことはできません。<br>お店にある二次元コードを読み取ってね！</p>
+    <p id="error-msg" class="error-msg-text">このページは直接開くことはできません。<br>お店にある二次元コードを読み取ってね！</p>
 </div>
 
 <script>
-    // 🌟 GASのURL
+    // GASのURL
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzdl008xh47dhQjdMgKmNJ6qFeuiEVVh8UbCthxHiNWlqYcj82_xmCs4_exI1oJ2s0i/exec";
 
     const holidays = ["2024/01/01", "2024/01/08", "2024/02/11", "2024/02/12", "2024/02/23", "2024/03/20", "2024/04/29", "2024/05/03", "2024/05/04", "2024/05/05", "2024/05/06", "2024/07/15", "2024/08/11", "2024/08/12", "2024/09/16", "2024/09/22", "2024/09/23", "2024/10/14", "2024/11/03", "2024/11/04", "2024/11/23"];
@@ -231,31 +232,42 @@
 
     function checkCondition() {
         const params = new URLSearchParams(window.location.search);
+        
+        // 🌟 テストモード：URLに ?test=true があればすべての制限を無視して通す
+        if (params.get('test') === 'true') {
+            return true;
+        }
+
         const errorScreen = document.getElementById('screen-error');
         const errorTitle = document.getElementById('error-title');
         const errorMsg = document.getElementById('error-msg');
         const errorIcon = document.getElementById('error-icon');
 
+        // QR経由かのチェック
         if (params.get('source') !== 'qr') {
             errorScreen.style.display = 'flex';
             return false;
         }
 
+        // 土日祝日チェック
         const isWeekend = (day === 0 || day === 6);
         const isHoliday = holidays.includes(dateStr);
         if (!isWeekend && !isHoliday) {
             errorScreen.style.display = 'flex';
             errorIcon.innerText = "📅";
             errorTitle.innerText = "平日はお休みだよ";
-            errorMsg.innerText = "このクーポンは土・日・祝日限定です。<br>またお休みの日に遊びに来てね！";
+            // ★ innerHTML に変更（<br>が改行として効くようになります）
+            errorMsg.innerHTML = "このクーポンは土・日・祝日限定です。<br>またお休みの日に遊びに来てね！";
             return false;
         }
 
+        // 1日1回チェック
         if (localStorage.getItem('coupon_used_date') === dateStr) {
             errorScreen.style.display = 'flex';
             errorIcon.innerText = "💖";
             errorTitle.innerText = "また遊びに来てね！";
-            errorMsg.innerText = "今日の分はもう使ったよ。<br>クーポンは1日1回までです。また明日ね！";
+            // ★ innerHTML に変更
+            errorMsg.innerHTML = "今日の分はもう使ったよ。<br>クーポンは1日1回までです。また明日ね！";
             return false;
         }
 
@@ -270,8 +282,15 @@
         toggleModal('modal-staff', true);
     }
 
-    // 🌟 GASに利用状況を送信する関数
+    // GASに利用状況を送信する関数
     function sendToGas() {
+        // テストモード時は送信しないようにする（本当のデータと混ざらないようにするため）
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('test') === 'true') {
+            console.log("テストモードのためGASへの送信をスキップしました");
+            return;
+        }
+
         fetch(`${GAS_URL}?type=holiday_crane_free`, { mode: 'no-cors' })
         .then(() => console.log("利用状況を送信しました"))
         .catch(err => console.error("送信エラー:", err));
@@ -281,8 +300,11 @@
         // GASへデータ送信
         sendToGas();
 
-        // 使用済みとして保存
-        localStorage.setItem('coupon_used_date', dateStr);
+        // 使用済みとして保存（テストモードの時は記録しない）
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('test') !== 'true') {
+            localStorage.setItem('coupon_used_date', dateStr);
+        }
         
         toggleModal('modal-staff', false);
         document.getElementById('main-ui').style.display = 'none';
