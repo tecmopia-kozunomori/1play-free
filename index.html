@@ -14,7 +14,6 @@
             --font-main: 'M PLUS Rounded 1c', sans-serif;
         }
 
-        /* 🌟 休日のワクワク感を出す動くストライプ背景 */
         body {
             font-family: var(--font-main);
             margin: 0;
@@ -41,14 +40,13 @@
         .container {
             width: 100%;
             max-width: 480px;
-            background: rgba(255, 255, 255, 0.95); /* 背景が少し透けるように */
+            background: rgba(255, 255, 255, 0.95);
             display: flex;
             flex-direction: column;
             position: relative;
             box-shadow: 0 0 30px rgba(255, 133, 161, 0.3);
         }
 
-        /* --- ヘッダー領域 --- */
         .header {
             padding: 40px 20px;
             text-align: center;
@@ -61,7 +59,6 @@
             position: relative;
             overflow: hidden;
         }
-        /* ヘッダーの中のキラキラ装飾 */
         .header::before, .header::after {
             content: '✨';
             position: absolute;
@@ -89,7 +86,6 @@
             text-shadow: 2px 3px 0 rgba(0,0,0,0.15);
         }
 
-        /* --- メインコンテンツ --- */
         .content {
             padding: 30px 20px;
             text-align: center;
@@ -111,7 +107,6 @@
         }
         .guide-btn:active { transform: scale(0.95); }
 
-        /* 🌟 アーケードゲーム風の脈打つボタン */
         .coupon-btn {
             background: linear-gradient(to bottom, #ff9eb5, #ff4d7d);
             color: white;
@@ -148,13 +143,12 @@
             border-radius: 15px;
         }
 
-        /* --- ポップアップ --- */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6);
             display: none; justify-content: center; align-items: center;
             z-index: 1000; padding: 20px; box-sizing: border-box;
-            backdrop-filter: blur(5px); /* 背景を少しぼかす */
+            backdrop-filter: blur(5px);
         }
         .modal {
             background: white; width: 100%; max-width: 400px;
@@ -185,13 +179,11 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        /* --- 特典獲得画面 --- */
         #screen-result {
             display: none; position: fixed; inset: 0;
             background: var(--bg-white); z-index: 2000;
             flex-direction: column; align-items: center; justify-content: center;
             text-align: center;
-            /* 🌟 結果画面もストライプで華やかに */
             background: repeating-linear-gradient(-45deg, var(--light-pink), var(--light-pink) 20px, var(--bg-white) 20px, var(--bg-white) 40px);
             background-size: 200% 200%;
             animation: stripeMove 20s linear infinite;
@@ -216,7 +208,6 @@
             100% { box-shadow: 0 0 20px var(--main-pink); transform: scale(1); }
         }
 
-        /* --- 制限・エラー画面 --- */
         .full-screen-error {
             position: fixed; inset: 0; background: var(--bg-white);
             display: none; flex-direction: column; align-items: center; justify-content: center;
@@ -224,6 +215,17 @@
         }
         .error-icon { font-size: 5rem; margin-bottom: 20px; }
         .error-msg-text { line-height: 1.6; font-weight: bold; background: var(--light-pink); padding: 20px; border-radius: 20px;}
+        /* 次回利用日の強調スタイル */
+        .next-date-highlight {
+            display: inline-block;
+            background: white;
+            color: var(--hot-pink);
+            padding: 5px 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 1.2rem;
+            border: 2px dashed var(--hot-pink);
+        }
 
     </style>
 </head>
@@ -297,11 +299,34 @@
 <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzdl008xh47dhQjdMgKmNJ6qFeuiEVVh8UbCthxHiNWlqYcj82_xmCs4_exI1oJ2s0i/exec";
 
-    const holidays = ["2024/01/01", "2024/01/08", "2024/02/11", "2024/02/12", "2024/02/23", "2024/03/20", "2024/04/29", "2024/05/03", "2024/05/04", "2024/05/05", "2024/05/06", "2024/07/15", "2024/08/11", "2024/08/12", "2024/09/16", "2024/09/22", "2024/09/23", "2024/10/14", "2024/11/03", "2024/11/04", "2024/11/23"];
+    // 祝日設定（※運用年度に合わせて更新してください）
+    const holidays = [
+        "2024/01/01", "2024/01/08", "2024/02/11", "2024/02/12", "2024/02/23", "2024/03/20", "2024/04/29", "2024/05/03", "2024/05/04", "2024/05/05", "2024/05/06", "2024/07/15", "2024/08/11", "2024/08/12", "2024/09/16", "2024/09/22", "2024/09/23", "2024/10/14", "2024/11/03", "2024/11/04", "2024/11/23",
+        // 2026年の一部の例
+        "2026/1/1", "2026/1/12", "2026/2/11", "2026/2/23", "2026/3/20", "2026/4/29", "2026/5/3", "2026/5/4", "2026/5/5", "2026/5/6" 
+    ];
 
     const today = new Date();
     const dateStr = today.toLocaleDateString('ja-JP');
     const day = today.getDay();
+    const dayNames = ["日", "月", "火", "水", "木", "金", "土"];
+
+    // 🌟 次の利用可能日（土日祝）を計算する関数
+    function getNextAvailableDate() {
+        let checkDate = new Date(today);
+        // 最大30日後までチェック
+        for (let i = 1; i <= 30; i++) {
+            checkDate.setDate(checkDate.getDate() + 1);
+            const checkDay = checkDate.getDay();
+            const checkDateStr = checkDate.toLocaleDateString('ja-JP');
+            
+            // 土(6)、日(0)、または祝日リストに含まれているか
+            if (checkDay === 0 || checkDay === 6 || holidays.includes(checkDateStr)) {
+                return `${checkDate.getMonth() + 1}月${checkDate.getDate()}日（${dayNames[checkDay]}）`;
+            }
+        }
+        return "次の土・日・祝日"; // 見つからなかった場合の予備
+    }
 
     let secretTapCount = 0;
     function activateSecretTestMode() {
@@ -336,10 +361,11 @@
         const isWeekend = (day === 0 || day === 6);
         const isHoliday = holidays.includes(dateStr);
         if (!isWeekend && !isHoliday) {
+            const nextDate = getNextAvailableDate(); // 次回利用日を取得
             errorScreen.style.display = 'flex';
-            errorIcon.innerText = "📅";
+            errorIcon.innerText = "🎡"; // 数字のない絵文字に変更
             errorTitle.innerText = "平日はお休みだよ";
-            errorMsg.innerHTML = "このクーポンは土・日・祝日限定です。<br>またお休みの日に遊びに来てね！";
+            errorMsg.innerHTML = `このクーポンは土・日・祝日限定です。<br>次回のご利用可能日は<br><span class="next-date-highlight">${nextDate}</span><br>となります！また遊びに来てね！`;
             return false;
         }
 
