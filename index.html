@@ -306,21 +306,17 @@
 <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzdl008xh47dhQjdMgKmNJ6qFeuiEVVh8UbCthxHiNWlqYcj82_xmCs4_exI1oJ2s0i/exec";
 
-    // 🌟 祝日設定（※ゼロ埋めなしの「yyyy/m/d」形式で統一してください）
+    // 祝日設定
     const holidays = [
         "2024/1/1", "2024/1/8", "2024/2/11", "2024/2/12", "2024/2/23", "2024/3/20", "2024/4/29", "2024/5/3", "2024/5/4", "2024/5/5", "2024/5/6", "2024/7/15", "2024/8/11", "2024/8/12", "2024/9/16", "2024/9/22", "2024/9/23", "2024/10/14", "2024/11/3", "2024/11/4", "2024/11/23",
-        // 2026年の一部の例
         "2026/1/1", "2026/1/12", "2026/2/11", "2026/2/23", "2026/3/20", "2026/4/29", "2026/5/3", "2026/5/4", "2026/5/5", "2026/5/6", "2026/7/20", "2026/8/11", "2026/9/21", "2026/9/22", "2026/9/23", "2026/10/12", "2026/11/3", "2026/11/23"
     ];
 
     const today = new Date();
-    
-    // 🌟 スマホ環境に依存しないように「yyyy/m/d」の形を自作して統一
     const y = today.getFullYear();
     const m = today.getMonth() + 1;
     const d = today.getDate();
-    const dateStr = `${y}/${m}/${d}`; // 例: "2026/5/11"
-
+    const dateStr = `${y}/${m}/${d}`; 
     const day = today.getDay();
     const dayNames = ["日", "月", "火", "水", "木", "金", "土"];
 
@@ -333,9 +329,8 @@
             const cy = checkDate.getFullYear();
             const cm = checkDate.getMonth() + 1;
             const cd = checkDate.getDate();
-            const checkDateStr = `${cy}/${cm}/${cd}`; // 比較用の日付を作成
+            const checkDateStr = `${cy}/${cm}/${cd}`; 
             
-            // 土(6)、日(0)、または祝日リストに含まれているか
             if (checkDay === 0 || checkDay === 6 || holidays.includes(checkDateStr)) {
                 return `${cm}月${cd}日（${dayNames[checkDay]}）`;
             }
@@ -409,18 +404,21 @@
         toggleModal('modal-staff', true);
     }
 
+    // 🌟 GASへ送信する処理（テストモードのときも送信するように変更しました）
     function sendToGas() {
-        if (window.location.href.includes('test=true') || sessionStorage.getItem('is_test_mode') === 'true') {
-            return;
-        }
-        fetch(`${GAS_URL}?type=holiday_crane_free`, { mode: 'no-cors' });
+        // もしGAS側で「これはテストデータだ」と明確に分けたい場合は、パラメータを変更できます。
+        // 現在は本番と同じ `type=holiday_crane_free` として送信します。
+        fetch(`${GAS_URL}?type=holiday_crane_free`, { mode: 'no-cors' })
+        .then(() => console.log("利用状況を送信しました"))
+        .catch(err => console.error("送信エラー:", err));
     }
 
     function activateCoupon() {
         sendToGas();
 
+        // 🌟 スマホ側の使用済み記録は、テストモードではない時のみ保存（何度もテストできるようにするため）
         if (!window.location.href.includes('test=true') && sessionStorage.getItem('is_test_mode') !== 'true') {
-            localStorage.setItem('coupon_used_date', dateStr); // 使用済み履歴もゼロなし統一フォーマットで保存
+            localStorage.setItem('coupon_used_date', dateStr); 
         }
         
         toggleModal('modal-staff', false);
