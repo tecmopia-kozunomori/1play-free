@@ -213,9 +213,17 @@
             display: none; flex-direction: column; align-items: center; justify-content: center;
             text-align: center; padding: 20px; z-index: 3000;
         }
-        .error-icon { font-size: 5rem; margin-bottom: 20px; }
+        
+        /* 🌟 エラーアイコンもタップ可能に（指マークが出るように設定） */
+        .error-icon { 
+            font-size: 5rem; 
+            margin-bottom: 20px; 
+            cursor: pointer; 
+            user-select: none;
+        }
+        
         .error-msg-text { line-height: 1.6; font-weight: bold; background: var(--light-pink); padding: 20px; border-radius: 20px;}
-        /* 次回利用日の強調スタイル */
+        
         .next-date-highlight {
             display: inline-block;
             background: white;
@@ -291,7 +299,7 @@
 </div>
 
 <div id="screen-error" class="full-screen-error">
-    <div class="error-icon" id="error-icon">⚠️</div>
+    <div class="error-icon" id="error-icon" onclick="activateSecretTestMode()">⚠️</div>
     <h2 id="error-title">二次元コードから遊んでね</h2>
     <p id="error-msg" class="error-msg-text">このページは直接開くことはできません。<br>お店にある二次元コードを読み取ってね！</p>
 </div>
@@ -299,10 +307,8 @@
 <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzdl008xh47dhQjdMgKmNJ6qFeuiEVVh8UbCthxHiNWlqYcj82_xmCs4_exI1oJ2s0i/exec";
 
-    // 祝日設定（※運用年度に合わせて更新してください）
     const holidays = [
         "2024/01/01", "2024/01/08", "2024/02/11", "2024/02/12", "2024/02/23", "2024/03/20", "2024/04/29", "2024/05/03", "2024/05/04", "2024/05/05", "2024/05/06", "2024/07/15", "2024/08/11", "2024/08/12", "2024/09/16", "2024/09/22", "2024/09/23", "2024/10/14", "2024/11/03", "2024/11/04", "2024/11/23",
-        // 2026年の一部の例
         "2026/1/1", "2026/1/12", "2026/2/11", "2026/2/23", "2026/3/20", "2026/4/29", "2026/5/3", "2026/5/4", "2026/5/5", "2026/5/6" 
     ];
 
@@ -311,32 +317,37 @@
     const day = today.getDay();
     const dayNames = ["日", "月", "火", "水", "木", "金", "土"];
 
-    // 🌟 次の利用可能日（土日祝）を計算する関数
     function getNextAvailableDate() {
         let checkDate = new Date(today);
-        // 最大30日後までチェック
         for (let i = 1; i <= 30; i++) {
             checkDate.setDate(checkDate.getDate() + 1);
             const checkDay = checkDate.getDay();
             const checkDateStr = checkDate.toLocaleDateString('ja-JP');
             
-            // 土(6)、日(0)、または祝日リストに含まれているか
             if (checkDay === 0 || checkDay === 6 || holidays.includes(checkDateStr)) {
                 return `${checkDate.getMonth() + 1}月${checkDate.getDate()}日（${dayNames[checkDay]}）`;
             }
         }
-        return "次の土・日・祝日"; // 見つからなかった場合の予備
+        return "次の土・日・祝日";
     }
 
+    // 🌟 テストモード判定の改良
     let secretTapCount = 0;
+    let tapTimer;
+    
     function activateSecretTestMode() {
         secretTapCount++;
+        clearTimeout(tapTimer); // 連続タップ中はリセットタイマーをキャンセル
+        
         if (secretTapCount >= 5) {
             alert("🛠️ テストモードを有効にしました！\nすべての制限を解除します。");
             sessionStorage.setItem('is_test_mode', 'true');
-            document.getElementById('screen-error').style.display = 'none';
+            document.getElementById('screen-error').style.display = 'none'; // エラー画面を強制的に非表示
+            secretTapCount = 0;
         }
-        setTimeout(() => { secretTapCount = 0; }, 1000);
+        
+        // 最後のタップから1秒間何も操作がなかったらカウントをゼロに戻す
+        tapTimer = setTimeout(() => { secretTapCount = 0; }, 1000);
     }
 
     function checkCondition() {
@@ -361,9 +372,9 @@
         const isWeekend = (day === 0 || day === 6);
         const isHoliday = holidays.includes(dateStr);
         if (!isWeekend && !isHoliday) {
-            const nextDate = getNextAvailableDate(); // 次回利用日を取得
+            const nextDate = getNextAvailableDate(); 
             errorScreen.style.display = 'flex';
-            errorIcon.innerText = "🎡"; // 数字のない絵文字に変更
+            errorIcon.innerText = "🎡"; 
             errorTitle.innerText = "平日はお休みだよ";
             errorMsg.innerHTML = `このクーポンは土・日・祝日限定です。<br>次回のご利用可能日は<br><span class="next-date-highlight">${nextDate}</span><br>となります！また遊びに来てね！`;
             return false;
